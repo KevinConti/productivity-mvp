@@ -1,7 +1,7 @@
 <script lang="typescript">
     import { fade } from 'svelte/transition';
-    import { getReward } from './Rewards.svelte';
-    import AppShell from './AppShell.svelte';
+    import { getReward } from '../Rewards.svelte';
+    import AppShell from '../AppShell.svelte';
     // DEV-VARIABLES
     const speedUpPomodoro = false;
 

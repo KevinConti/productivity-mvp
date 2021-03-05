@@ -11,7 +11,7 @@
     type Time = {
         minutes : minutes,
         seconds: seconds,
-        isExpired: Function
+        isExpired: () => boolean
     };
     enum State {
         SelectingTimer,
@@ -43,11 +43,12 @@
         setTimeout(onSecondPassed, (speedUpPomodoro ? 1 : 1000));
     }
     
-
+    $: document.title = formatTime(timeRemaining);
     // Subtracts seconds from timeRemaining, AND changes state when timer is completed
     function onSecondPassed(){
         // Time is up
         if (timeRemaining.isExpired()) {
+            document.title = "Claim your reward!"
             state = State.Reward;
             return;
         }
@@ -102,10 +103,14 @@
         </ul>
     </section>
     {:else if state === State.Reward }
-    <section transition:fade>
-        <h2>Your Reward:</h2>
-        <h3>{getReward()}</h3>
-        <button on:click={e => state = State.SelectingTimer}>Start a new session</button>
+    <section transition:fade class="grid content-center">
+        <h2 class="text-center text-xl italic">Your Reward:</h2>
+        <h3 class="text-center my-16 text-4xl">{getReward()}</h3>
+        <div class="mx-auto my-16">
+            <button on:click={e => state = State.SelectingTimer} class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
+                Start a new session
+            </button>
+        </div>
     </section>
     {/if}
 </AppShell>

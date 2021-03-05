@@ -10,10 +10,10 @@
             = (x) => (0 <= x && x < 0.30);
 
         const isLeisure : (x: number) => boolean
-            = (x) => (0.30 <= x && x < 0.80);
+            = (x) => (0.30 <= x && x < 0.90);
 
         const isMajorReward : (x: number) => boolean
-            = (x) => (0.80 <= x && x < 1);
+            = (x) => (0.90 <= x && x < 1);
 
 
         let x = Math.random();
@@ -47,9 +47,9 @@
         console.log({category});
         
         let options = {
-            'BonusXP': ["Wash dishes", "Do Laundry", "Pull-ups", "Push-ups", "Clean House / Wash Dishes"],
+            'BonusXP': ["Wash dishes", "Do Laundry", "Pull-ups", "Push-ups", "Clean House"],
             'Leisure': ["Audiobook", "Read", "Enjoy the sun or take a quick walk"],
-            'MajorReward': ["Not sure"]
+            'MajorReward': ["Order out", "$10 towards item currency"]
         };
         let selectedOptions : string[] = options[category];
 

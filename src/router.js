@@ -1,9 +1,11 @@
 // Components
-import Tasks from './routes/Tasks.svelte'
+import Play from './routes/Play.svelte'
+import Tasks from './routes/Tasks.svelte';
 
 export const routes = {
     // Exact path
-    '/': Tasks,
+    '/': Play,
+    '/Play': Play,
     '/Tasks': Tasks
     // Using named parameters, with last being optional
     //'/author/:first/:last?': Author,

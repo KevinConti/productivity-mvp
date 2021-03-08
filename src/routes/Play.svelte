@@ -11,6 +11,7 @@
     type Time = {
         minutes : minutes,
         seconds: seconds,
+        paused: boolean,
         isExpired: () => boolean
     };
     enum State {
@@ -27,10 +28,11 @@
         seconds : 0,
         isExpired : function() : boolean {
             return (this.minutes === 0 && this.seconds === 0);
-        }
+        },
+        paused: false
     };
 
-    let userSelectableTimes : minutes[] = [1, 5, 10, 15, 25, 30, 45, 60, 90];
+    let userSelectableTimes : minutes[] = [5, 10, 15, 20, 25, 30, 45, 60, 90];
 
     function userSelectedTime(minutes : minutes) : void {
         timeRemaining.minutes = minutes;
@@ -44,8 +46,25 @@
     }
     
     $: document.title = formatTime(timeRemaining);
+
+    function handlePause() {
+        timeRemaining.paused = !timeRemaining.paused;
+
+        if (timeRemaining.paused) {
+            document.title = "Timer paused";
+        }
+
+        else onSecondPassed();
+    }
+
     // Subtracts seconds from timeRemaining, AND changes state when timer is completed
     function onSecondPassed(){
+
+        // Only run if the timer isn't paused
+        if (timeRemaining.paused) {
+            return;
+        }
+
         // Time is up
         if (timeRemaining.isExpired()) {
             document.title = "Claim your reward!"
@@ -85,6 +104,9 @@
     <section class="h-screen">
         <div class="grid content-center items-center h-screen">
             <h1 class="text-center text-6xl font-black font-sans">{formatTime(timeRemaining)}</h1>
+            <button type="button" on:click={handlePause} class="my-2 w-1/2 mx-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {timeRemaining.paused ? "Resume" : "Pause"}
+            </button>
         </div>
     </section>
     {:else if state === State.SelectingTimer}

@@ -40,12 +40,9 @@
     }
 
     // onTimePassed
-    $: if (state === State.TimerCountingDown) {
-        // Start first second
-        setTimeout(onSecondPassed, (speedUpPomodoro ? 1 : 1000));
+    $: if (state === State.TimerCountingDown && timeRemaining.paused === false && timeRemaining.isExpired() === false) {
+        setTimeout(substractSecond, (speedUpPomodoro ? 1 : 1000));
     }
-    
-    $: document.title = formatTime(timeRemaining);
 
     function handlePause() {
         timeRemaining.paused = !timeRemaining.paused;
@@ -53,26 +50,10 @@
         if (timeRemaining.paused) {
             document.title = "Timer paused";
         }
-
-        else onSecondPassed();
     }
 
-    // Subtracts seconds from timeRemaining, AND changes state when timer is completed
-    function onSecondPassed(){
-
-        // Only run if the timer isn't paused
-        if (timeRemaining.paused) {
-            return;
-        }
-
-        // Time is up
-        if (timeRemaining.isExpired()) {
-            document.title = "Claim your reward!"
-            state = State.Reward;
-            return;
-        }
-
-        // Seconds are at zero
+    function substractSecond() {
+        
         if (timeRemaining.seconds === 0){
             timeRemaining.minutes--;
             timeRemaining.seconds = 59;
@@ -80,7 +61,15 @@
         else {
             timeRemaining.seconds--;
         }
-        setTimeout(onSecondPassed, (speedUpPomodoro ? 1 : 1000))
+        
+        document.title = formatTime(timeRemaining);
+        
+        // Time is up
+        if (timeRemaining.isExpired()) {
+            document.title = "Claim your reward!"
+            state = State.Reward;
+            return;
+        }
     }
 
     function formatTime(time: Time){

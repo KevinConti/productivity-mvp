@@ -6,6 +6,9 @@
 
 <script lang='ts'>
     import { onMount } from "svelte";
+    import {push} from 'svelte-spa-router';
+
+    const redirect: string = "/";
 
     let oktaReady: boolean = false;
     let oktaJsReady: boolean = false;
@@ -44,10 +47,11 @@
             }
             });
 
-            // SPA and Native apps using PKCE can receive tokens directly without any redirect
-            signIn.showSignInToGetTokens().then(function(tokens) {
+        // SPA and Native apps using PKCE can receive tokens directly without any redirect
+        signIn.showSignInToGetTokens().then(function(tokens) {
             // store/use tokens
             console.log({tokens})
+            push(redirect);
         });
     }
 

@@ -47,9 +47,9 @@
         console.log({category});
         
         let options = {
-            'BonusXP': ["Wash dishes", "Do Laundry", "Pull-ups", "Push-ups", "Clean House"],
+            'BonusXP': ["Wash dishes", "Do Laundry", "Pull-ups", "Clean House"],
             'Leisure': ["Audiobook", "Read", "Enjoy the sun or take a quick walk"],
-            'MajorReward': ["Order out", "$10 towards item currency"]
+            'MajorReward': ["PSO2:NGS Dailies", "15|10 Chess Game & Analysis"]
         };
         let selectedOptions : string[] = options[category];
 

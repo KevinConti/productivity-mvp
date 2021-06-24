@@ -23,7 +23,7 @@
         }
 
         isExpired(): boolean {
-            if (this.endTime === null) return true;
+            if (this.endTime === null) return false;
 
             else return (Date.now() >= this.endTime);
         }
@@ -36,6 +36,11 @@
             const delta: number = this.endTime - Date.now();
             const remaining: Date = new Date(delta);
             return dateFormat(remaining, "MM:ss");
+        }
+
+        resetTimer() {
+            this.startTime = null;
+            this.endTime = null;
         }
     };
     
@@ -50,7 +55,7 @@
 
     let timeRemaining: Time = null;
 
-    let userSelectableTimes : minutes[] = [5, 10, 15, 20, 25, 30, 45, 60, 90];
+    let userSelectableTimes : minutes[] = [1, 5, 10, 15, 20, 25, 30, 45, 60, 90];
 
     // Sets the timer based on user input
     function userSelectedTime(minutes : minutes) : void {
@@ -66,8 +71,14 @@
     }
 
     let updateDisplayTime = () => {
-        displayTime = timeRemaining.getHumanReadableTime();
-        document.title = displayTime;
+        if (timeRemaining.isExpired()) {
+            timeRemaining.resetTimer();
+            state = State.Reward;
+        }
+        else {
+            displayTime = timeRemaining.getHumanReadableTime();
+            document.title = displayTime;
+        }
     }
 
     // Handle pausing by tracking how long we are paused for, and adjusting endTime accordingly once unpaused
@@ -94,7 +105,11 @@
 <AppShell selected="Play">
     {#if state === State.TimerCountingDown }
     <section class="h-screen">
-        <div class="grid content-center items-center h-screen">
+        <div class="mt-64 grid content-center items-center">
+            <h1 class="text-center text-2xl font-black">I'm working on:</h1>
+            <input placeholder="My project" class="w-1/2 mx-auto text-center text-4xl mb-8 font-black bg-gray-100"/>
+        </div>
+        <div class="grid content-center items-center">
             <h1 class="text-center text-6xl font-black font-sans">{displayTime}</h1>
             <button type="button" on:click={handlePause} class="my-2 w-1/2 mx-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 {timeRemaining.paused ? "Resume" : "Pause"}

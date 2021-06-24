@@ -2,18 +2,43 @@
     import { fade } from 'svelte/transition';
     import { getReward } from '../Rewards.svelte';
     import AppShell from '../AppShell.svelte';
+    import dateFormat from "dateformat";
     // DEV-VARIABLES
     const speedUpPomodoro = false;
 
-
+    // TYPES
     type minutes = number;
     type seconds = number;
-    type Time = {
-        minutes : minutes,
-        seconds: seconds,
-        paused: boolean,
-        isExpired: () => boolean
+    class Time {
+        startTime: number;
+        endTime: number;
+        paused: boolean;
+        pausedAt: number;
+
+        constructor(timerLength: minutes) {
+            this.startTime = Date.now();
+            this.endTime = Date.now() + this.toMillis(timerLength);
+            this.paused = false;
+            this.pausedAt = null;
+        }
+
+        isExpired(): boolean {
+            if (this.endTime === null) return true;
+
+            else return (Date.now() >= this.endTime);
+        }
+
+        toMillis(minutes: minutes) {
+            return minutes * 60 * 1000;
+        };
+
+        getHumanReadableTime(): string {
+            const delta: number = this.endTime - Date.now();
+            const remaining: Date = new Date(delta);
+            return dateFormat(remaining, "MM:ss");
+        }
     };
+    
     enum State {
         SelectingTimer,
         TimerCountingDown,
@@ -23,68 +48,46 @@
     // Component state (event)
     let state : State = State.SelectingTimer;
 
-    let timeRemaining : Time = {
-        minutes : 0,
-        seconds : 0,
-        isExpired : function() : boolean {
-            return (this.minutes === 0 && this.seconds === 0);
-        },
-        paused: false
-    };
+    let timeRemaining: Time = null;
 
     let userSelectableTimes : minutes[] = [5, 10, 15, 20, 25, 30, 45, 60, 90];
 
+    // Sets the timer based on user input
     function userSelectedTime(minutes : minutes) : void {
-        timeRemaining.minutes = minutes;
+        timeRemaining = new Time(minutes);
         state = State.TimerCountingDown;
     }
 
     // onTimePassed
+    let displayTime : string = null;
+    let interval = null;
     $: if (state === State.TimerCountingDown && timeRemaining.paused === false && timeRemaining.isExpired() === false) {
-        setTimeout(substractSecond, (speedUpPomodoro ? 1 : 1000));
+        interval = setInterval(updateDisplayTime, 300);
     }
 
+    let updateDisplayTime = () => {
+        displayTime = timeRemaining.getHumanReadableTime();
+        document.title = displayTime;
+    }
+
+    // Handle pausing by tracking how long we are paused for, and adjusting endTime accordingly once unpaused
     function handlePause() {
         timeRemaining.paused = !timeRemaining.paused;
 
         if (timeRemaining.paused) {
+            // Stop counting down
+            clearInterval(interval);
+            // Adjust title 
             document.title = "Timer paused";
-        }
-    }
-
-    function substractSecond() {
-        
-        if (timeRemaining.seconds === 0){
-            timeRemaining.minutes--;
-            timeRemaining.seconds = 59;
-        }
-        else {
-            timeRemaining.seconds--;
+            // Keep track of pause time
+            timeRemaining.pausedAt = Date.now();
         }
         
-        document.title = formatTime(timeRemaining);
-        
-        // Time is up
-        if (timeRemaining.isExpired()) {
-            document.title = "Claim your reward!"
-            state = State.Reward;
-            return;
+        if (!timeRemaining.paused) {
+            // Interval is set using dynamic svelte
+            const pausedLength = Date.now() - timeRemaining.pausedAt;
+            timeRemaining.endTime += pausedLength;
         }
-    }
-
-    function formatTime(time: Time){
-        let minutes : string = addZeroIfNecessary(time.minutes);
-        let seconds : string = addZeroIfNecessary(time.seconds);
-        return`${minutes}:${seconds}`;
-    }
-
-    function addZeroIfNecessary(minuteOrSecond : minutes | seconds) : string{
-        
-        if (minuteOrSecond.toString().length === 1) {
-            return `0${minuteOrSecond}`;
-        }
-
-        return minuteOrSecond.toString();
     }
 </script>
 
@@ -92,7 +95,7 @@
     {#if state === State.TimerCountingDown }
     <section class="h-screen">
         <div class="grid content-center items-center h-screen">
-            <h1 class="text-center text-6xl font-black font-sans">{formatTime(timeRemaining)}</h1>
+            <h1 class="text-center text-6xl font-black font-sans">{displayTime}</h1>
             <button type="button" on:click={handlePause} class="my-2 w-1/2 mx-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 {timeRemaining.paused ? "Resume" : "Pause"}
             </button>

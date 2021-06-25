@@ -4,4 +4,5 @@ const dark = writable(false); // dark mode
 const user = writable({
     tokens: null
 });
-export { user };
+const tasks = writable([]);
+export { user, tasks };

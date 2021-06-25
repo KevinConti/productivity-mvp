@@ -3,6 +3,10 @@
     import { getReward } from '../Rewards.svelte';
     import AppShell from '../AppShell.svelte';
     import dateFormat from "dateformat";
+    import {tasks} from "../store";
+    import Experience from "../Experience.svelte";
+    import {onMount} from 'svelte';
+
     // DEV-VARIABLES
     const speedUpPomodoro = false;
 
@@ -43,6 +47,32 @@
             this.endTime = null;
         }
     };
+
+    // Experience Bar calling logic
+    let experienceBar;
+
+    // Quick Add logic
+    const taskDelimiter = ',';
+    // Attempt to pull tasks from localstorage
+    if (window.localStorage.getItem("tasks")) {
+        $tasks = window.localStorage.getItem("tasks")?.split(taskDelimiter);
+    }
+
+    let taskText: string = "";
+    function quickAdd() {
+        if (taskText.length > 0) {
+            $tasks = [...$tasks, taskText];
+            window.localStorage.setItem("tasks", $tasks.join(taskDelimiter));
+            taskText = "";
+        }
+        else {
+            alert("You didn't give me a task!");
+        }
+    }
+    function quickDelete(index: number) {
+        $tasks.splice(index, 1);
+        $tasks = $tasks; // Activate Svelte's reactivity
+    }
     
     enum State {
         SelectingTimer,
@@ -56,10 +86,13 @@
     let timeRemaining: Time = null;
 
     let userSelectableTimes : minutes[] = [1, 5, 10, 15, 20, 25, 30, 45, 60, 90];
+    let currentTaskTime : minutes;
 
     // Sets the timer based on user input
     function userSelectedTime(minutes : minutes) : void {
         timeRemaining = new Time(minutes);
+        // Record for reward
+        currentTaskTime = minutes;
         state = State.TimerCountingDown;
     }
 
@@ -72,8 +105,7 @@
 
     let updateDisplayTime = () => {
         if (timeRemaining.isExpired()) {
-            timeRemaining.resetTimer();
-            state = State.Reward;
+            completeTask();
         }
         else {
             displayTime = timeRemaining.getHumanReadableTime();
@@ -105,11 +137,13 @@
     function completeTask() {
         timeRemaining.resetTimer();
         clearInterval(interval);
+        experienceBar.gainExperience(50 * currentTaskTime);
         state = State.Reward;
     }
 </script>
 
 <AppShell selected="Play">
+    <Experience bind:this={experienceBar}/>
     {#if state === State.TimerCountingDown }
     <section class="h-screen">
         <div class="mt-64 grid content-center items-center">
@@ -124,6 +158,25 @@
             <button type="button" on:click={completeTask} class="my-2 w-1/2 mx-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 {"Task Complete!"}
             </button>
+        </div>
+        <div>
+            <h1>Quick add tasks</h1>
+            <div class="flex">
+                <input placeholder="Enter task here" bind:value={taskText} />
+                <button on:click={quickAdd}>Add Task</button>
+            </div>
+        </div>
+        <div>
+            <h1>Tasks</h1>
+            <ul>
+                {#each $tasks as task, i}
+                <div class="grid grid-cols-3">
+                    <li class="col-span-2">{task}</li>
+                    <button on:click={e => quickDelete(i)} class="col-span-1">Complete</button>
+                </div>
+                {/each}
+            </ul>
+            
         </div>
     </section>
     {:else if state === State.SelectingTimer}

@@ -104,6 +104,7 @@
     // When a user manually completes a task, offer them the reward
     function completeTask() {
         timeRemaining.resetTimer();
+        clearInterval(interval);
         state = State.Reward;
     }
 </script>

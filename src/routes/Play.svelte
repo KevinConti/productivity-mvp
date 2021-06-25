@@ -100,6 +100,12 @@
             timeRemaining.endTime += pausedLength;
         }
     }
+
+    // When a user manually completes a task, offer them the reward
+    function completeTask() {
+        timeRemaining.resetTimer();
+        state = State.Reward;
+    }
 </script>
 
 <AppShell selected="Play">
@@ -113,6 +119,9 @@
             <h1 class="text-center text-6xl font-black font-sans">{displayTime}</h1>
             <button type="button" on:click={handlePause} class="my-2 w-1/2 mx-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 {timeRemaining.paused ? "Resume" : "Pause"}
+            </button>
+            <button type="button" on:click={completeTask} class="my-2 w-1/2 mx-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                {"Task Complete!"}
             </button>
         </div>
     </section>

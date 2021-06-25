@@ -7,6 +7,7 @@
 <script lang='ts'>
     import { onMount } from "svelte";
     import {push} from 'svelte-spa-router';
+    import {user} from '../store.js';
 
     const redirect: string = "/";
 
@@ -51,6 +52,8 @@
         signIn.showSignInToGetTokens().then(function(tokens) {
             // store/use tokens
             console.log({tokens})
+            $user.tokens = tokens;
+            console.log({user: $user})
             push(redirect);
         });
     }

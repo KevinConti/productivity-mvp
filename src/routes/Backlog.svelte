@@ -8,6 +8,13 @@
     $: if (editingElement) {
         editingElement.focus();
     }
+
+    // ADD TASK
+    let newTaskText : string = "";
+    function addTask() {
+        tasks.addTask(newTaskText);
+        newTaskText = "";
+    }
 </script>
 
 <AppShell selected="Backlog">
@@ -35,8 +42,13 @@
                     {/if}
                 </li>
             {/each}
-
-            <!-- More items... -->
+            <!-- Add Task Logic -->
+            <li class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <input class="pl-2" placeholder="Add Task" bind:value={newTaskText} />
+                    <p on:click={addTask} class="text-green-500 hober:text-green-600">Add</p>
+                </div>
+            </li>
         </ul>
     </div>
 </AppShell>

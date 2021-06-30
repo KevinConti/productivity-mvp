@@ -57,17 +57,12 @@
     let experienceBar;
 
     // Quick Add logic
-    const taskDelimiter = ',';
-    // Attempt to pull tasks from localstorage
-    if (window.localStorage.getItem("tasks")) {
-        $tasks = window.localStorage.getItem("tasks")?.split(taskDelimiter);
-    }
-
     let taskText: string = "";
+    let quickTasks: string[] = [];
     function quickAdd() {
         if (taskText.length > 0) {
-            console.log({tasks})
             tasks.addTask(taskText);
+            quickTasks = [...quickTasks, taskText];
         }
         else {
             alert("You didn't give me a task!");
@@ -170,15 +165,16 @@
             </div>
         </div>
         <div>
-            <h1>Tasks</h1>
+            <!-- TODO: This logic broke due to quickTasks not having the same index as $tasks -->
+            <!-- <h1>Tasks</h1>
             <ul>
-                {#each $tasks as task, i}
+                {#each quickTasks as quickTask, i}
                 <div class="grid grid-cols-3">
-                    <li class="col-span-2">{task}</li>
+                    <li class="col-span-2">{quickTask}</li>
                     <button on:click={e => quickDelete(i)} class="col-span-1">Complete</button>
                 </div>
                 {/each}
-            </ul>
+            </ul> -->
             
         </div>
     </section>

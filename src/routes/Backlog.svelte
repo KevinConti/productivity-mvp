@@ -29,7 +29,7 @@
                             <p contenteditable={editingIndex === i}>{task}</p>
                             <div class="flex justify-betweeen space-x-4">
                                 <p on:click={e => editingIndex = i} class="text-blue-500 hover:text-blue-600">Edit</p>
-                                <p class="text-green-500 hover:text-green-600">Complete</p>
+                                <p on:click={e => tasks.removeTaskAtIndex(i)} class="text-green-500 hover:text-green-600">Complete</p>
                             </div>
                         </div>
                     {/if}

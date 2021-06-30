@@ -36,6 +36,11 @@
             return minutes * 60 * 1000;
         };
 
+        millisToMinutes(millis: number) {
+            return millis / 1000 / 60;
+        }
+
+        // TODO: This is bugged logic. We are not creating the remaining date correctly and it always has 7 extra hours
         getHumanReadableTime(): string {
             const delta: number = this.endTime - Date.now();
             const remaining: Date = new Date(delta);
@@ -61,17 +66,15 @@
     let taskText: string = "";
     function quickAdd() {
         if (taskText.length > 0) {
-            $tasks = [...$tasks, taskText];
-            window.localStorage.setItem("tasks", $tasks.join(taskDelimiter));
-            taskText = "";
+            console.log({tasks})
+            tasks.addTask(taskText);
         }
         else {
             alert("You didn't give me a task!");
         }
     }
     function quickDelete(index: number) {
-        $tasks.splice(index, 1);
-        $tasks = $tasks; // Activate Svelte's reactivity
+        tasks.removeTaskAtIndex(index);
     }
     
     enum State {

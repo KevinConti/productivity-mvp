@@ -64,7 +64,10 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div>
     <h1 class="text-lg font-bold text-center">Level {level + 1}</h1>
-    <div class="bg-gray-600 w-full h-12 rounded-xl">
+    <div class="relative bg-gray-600 w-full h-12 rounded-xl">
+        <div class="absolute inset-0 grid content-center">
+            <p class="text-center text-white text-lg font-semibold">{experience} / {experienceToNextLevel}</p>
+        </div>
         <div class="bg-blue-600 h-12 rounded-xl {width}">
         </div>
     </div>

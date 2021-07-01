@@ -3,6 +3,7 @@ import Play from './routes/Play.svelte'
 import Tasks from './routes/Tasks.svelte';
 import Signin from './routes/Signin.svelte';
 import Backlog from './routes/Backlog.svelte';
+import DailyPlanning from './routes/DailyPlanning.svelte';
 
 export const routes = {
     // Exact path
@@ -11,6 +12,7 @@ export const routes = {
     '/Tasks': Tasks,
     '/sign-in': Signin,
     '/Backlog': Backlog,
+    '/daily-planning': DailyPlanning,
     // Using named parameters, with last being optional
     //'/author/:first/:last?': Author,
 

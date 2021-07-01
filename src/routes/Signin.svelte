@@ -7,7 +7,7 @@
 <script lang='ts'>
     import { onMount } from "svelte";
     import {push} from 'svelte-spa-router';
-    import {user} from '../store.js';
+    import {user} from '../store';
 
     const redirect: string = "/";
 

@@ -1,7 +1,7 @@
 <script>
     import AppShell from "../AppShell.svelte";
     import { link } from "svelte-spa-router";
-    import { user } from "../store.js";
+    import { user } from "../store";
 
     let name;
 </script>

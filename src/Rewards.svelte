@@ -47,7 +47,7 @@
         console.log({category});
         
         let options = {
-            'BonusXP': ["Pull-ups", "Clean House", "Do Laundry"],
+            'BonusXP': ["Pull-ups App", "Clean House", "Do Laundry", "Figure out fees for filing annually with an S-corp"],
             'Leisure': ["Audiobook/Read", "Enjoy the sun or take a quick walk", "Piano"],
             'MajorReward': ["PSO2:NGS Dailies", "15|10 Chess Game & Analysis", "20 Minutes Chess Study"]
         };

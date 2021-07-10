@@ -1,33 +1,46 @@
 import { get, writable } from "svelte/store";
+import { v4 as uuidv4 } from 'uuid';
 
 const user = writable({
     tokens: null
 });
 
 // TASKS
+type UuidType = string;
 export type TaskType = {
     isDaily: boolean,
-    text: string
+    text: string,
+    id: UuidType
 };
 function createTasksStore() {
     let data: TaskType[] = [];
     // Attempt to initialize tasks from localstorage
     if (window.localStorage.getItem("tasks")) {
         data = JSON.parse(window.localStorage.getItem("tasks"));
+        
+        // TODO: Commenting because migration logic is no longer needed
+        // Migration logic: If a task has no UUID, give it one
+        // FIXME: Does not actually update localstorage with the changes until an update occurs 
+        // for (let i = 0; i < data.length; i++) {
+        //     if (!data[i].id) {
+        //         data[i].id = uuidv4();
+        //     }
+        // }
     };
 
     const tasksStore = writable(data);
 
     // Replace `set` and `update` with methods that handle localStorage logic
     function addTask(taskText: string, isDaily: boolean = false) {
-        let task: TaskType = {isDaily, text: taskText}
+        let id: UuidType = uuidv4();
+        let task: TaskType = {isDaily, text: taskText, id}
         tasksStore.update(allTasks => [...allTasks, task]);
         persist();
     }
 
-    function removeTaskAtIndex(i: number) {
+    function removeTask(id: UuidType) {
         function updater(allTasks: TaskType[]) {
-            allTasks.splice(i, 1);
+            allTasks = allTasks.filter(task => task.id != id);
             return allTasks;
         }
 
@@ -48,7 +61,7 @@ function createTasksStore() {
     return {
         subscribe: tasksStore.subscribe,
         addTask,
-        removeTaskAtIndex,
+        removeTask,
         set:setter
     }
 }

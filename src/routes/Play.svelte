@@ -3,7 +3,7 @@
     import { getReward } from '../Rewards.svelte';
     import AppShell from '../AppShell.svelte';
     import dateFormat from "dateformat";
-    import {tasks} from "../store";
+    import {tasks, TaskType} from "../store";
     import Experience from "../Experience.svelte";
     import {onMount} from 'svelte';
 
@@ -68,9 +68,9 @@
             alert("You didn't give me a task!");
         }
     }
-    function quickDelete(index: number) {
-        tasks.removeTaskAtIndex(index);
-    }
+    // function quickDelete(task: TaskType) {
+    //     tasks.removeTask();
+    // }
     
     enum State {
         SelectingTimer,

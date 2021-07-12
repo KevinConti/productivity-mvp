@@ -1,6 +1,6 @@
 <script lang="ts">
     import AppShell from "../AppShell.svelte";
-    import { tasks } from "../store";
+    import { tasks, TaskTypes } from "../store";
     import type { TaskType } from "../store";
 
     // EDIT LOGIC
@@ -20,11 +20,11 @@
 
 <AppShell selected="Backlog">
     <!-- Daily Tasks-->
-    {#if $tasks.filter(t => t.isDaily)?.length > 0}
+    {#if $tasks.filter(t => t.type === TaskTypes.Daily)?.length > 0}
     <h1 class="text-center text-2xl font-black uppercase mt-4">Dailies</h1>
     <div class="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
         <ul class="divide-y divide-gray-200">
-            {#each $tasks.filter((t) => t.isDaily) as task}
+            {#each $tasks.filter(t => t.type === TaskTypes.Daily) as task}
                 <li class="px-4 py-4 sm:px-6">
                     <div class="flex items-center justify-between">
                         <p>{task.text}</p>
@@ -46,7 +46,7 @@
         <ul class="divide-y divide-gray-200">
             <!-- Can't just use .filter() here as it creates a copy of the array, ruining binding. -->
             {#each $tasks as task}
-                {#if (!task.isDaily)}
+                {#if (task.type !== TaskTypes.Daily)}
                 <li class="px-4 py-4 sm:px-6">
                     {#if editingId === task.id}
                     <div class="flex items-center justify-between">

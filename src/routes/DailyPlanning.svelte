@@ -1,6 +1,6 @@
 <script lang="ts">
     import AppShell from '../AppShell.svelte';
-    import { tasks } from '../store';
+    import { tasks, TaskTypes } from '../store';
     import type { TaskType } from '../store';
 
     let editingIndex: number;
@@ -14,7 +14,7 @@
     }
 
     // DAILY LOGIC
-    $: dailyTasks = $tasks.filter((t) => t.isDaily);
+    $: dailyTasks = $tasks.filter((t) => t.type === TaskTypes.Daily);
 </script>
 
 <AppShell selected={"Daily Planning"}>
@@ -25,11 +25,11 @@
     <h1>Dailies</h1>
     <div class="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
         <ul class="divide-y divide-gray-200">
-            {#each $tasks.filter((t) => t.isDaily) as task}
+            {#each $tasks.filter(t => t.type === TaskTypes.Daily) as task}
                 <li class="px-4 py-4 sm:px-6">
                     <div class="flex items-center justify-between">
                         <p>{task.text}</p>
-                        <p on:click={e => task.isDaily = false} class="text-blue-500 hover:text-blue-600 hover:underline">Remove from Dailies</p>
+                        <p on:click={e => task.type = TaskTypes.Normal} class="text-blue-500 hover:text-blue-600 hover:underline">Remove from Dailies</p>
                     </div>
                 </li>
             {/each}
@@ -42,12 +42,12 @@
     <h2 class="mt-4 text-gray-800 text-center text-xl font-semibold">Other tasks</h2>
     <div class="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
         <ul class="divide-y divide-gray-200">
-            {#each $tasks.filter((t) => !t.isDaily) as task, i}
+            {#each $tasks.filter((t) => t.type !== TaskTypes.Daily) as task, i}
                 <li class="px-4 py-4 sm:px-6">
                     <div class="flex items-center justify-between">
                         <p contenteditable={editingIndex === i}>{task.text}</p>
                         <div class="flex justify-betweeen space-x-4">
-                            <p on:click={e => task.isDaily = true} class="text-blue-500 hover:text-blue-600 hover:underline">Mark as Daily</p>
+                            <p on:click={e => task.type = TaskTypes.Daily} class="text-blue-500 hover:text-blue-600 hover:underline">Mark as Daily</p>
                         </div>
                     </div>
                 </li>

@@ -19,6 +19,24 @@
 </script>
 
 <AppShell selected="Backlog">
+    <!-- Main Goal -->
+    {#if $tasks.filter(t => t.type === TaskTypes.MainGoal)?.length > 0}
+    <h1 class="text-center text-2xl font-black uppercase mt-4">Main Goal</h1>
+    <div class="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
+        <ul class="divide-y divide-gray-200">
+            {#each $tasks.filter(t => t.type === TaskTypes.MainGoal) as task}
+            <li class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <p>{task.text}</p>
+                    <div class="flex justify-betweeen space-x-4">
+                        <p on:click={e => task.type = TaskTypes.Daily} class="text-green-500 hover:text-green-600">Remove as Main Goal</p>
+                    </div>
+                </div>
+            </li>
+            {/each}
+        </ul>
+    </div>
+    {/if}
     <!-- Daily Tasks-->
     {#if $tasks.filter(t => t.type === TaskTypes.Daily)?.length > 0}
     <h1 class="text-center text-2xl font-black uppercase mt-4">Dailies</h1>
@@ -46,7 +64,7 @@
         <ul class="divide-y divide-gray-200">
             <!-- Can't just use .filter() here as it creates a copy of the array, ruining binding. -->
             {#each $tasks as task}
-                {#if (task.type !== TaskTypes.Daily)}
+                {#if (task.type === TaskTypes.Normal)}
                 <li class="px-4 py-4 sm:px-6">
                     {#if editingId === task.id}
                     <div class="flex items-center justify-between">

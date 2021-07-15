@@ -25,7 +25,7 @@
     <h1>Dailies</h1>
     <div class="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
         <ul class="divide-y divide-gray-200">
-            {#each $tasks.filter(t => t.type === TaskTypes.Daily) as task}
+            {#each $tasks.filter(t => t.type === TaskTypes.Daily || t.type === TaskTypes.MainGoal) as task}
                 <li class="px-4 py-4 sm:px-6">
                     <div class="flex items-center justify-between">
                         <p>{task.text}</p>

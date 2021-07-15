@@ -71,9 +71,6 @@
     //     tasks.removeTask();
     // }
 
-    // MAIN GOAL LOGIC
-    let mainGoal: TaskType;
-
     enum State {
         SelectingTimer,
         TimerCountingDown,
@@ -149,12 +146,12 @@
     <Experience bind:this={experienceBar} />
     {#if state === State.TimerCountingDown}
         <section class="h-screen">
-            {#if mainGoal}
+            {#if $tasks.find(t => t.type === TaskTypes.MainGoal)}
             <h1 class="text-xl font-bold text-center mt-8">
                 Main Goal
             </h1>
             <h1 class="text-2xl font-bold text-center mt-4">
-                {mainGoal.text}
+                {$tasks.find(t => t.type === TaskTypes.MainGoal).text}
             </h1>
             {/if}
             <div class="mt-64 grid content-center items-center">
@@ -209,12 +206,12 @@
     {:else if state === State.SelectingTimer}
         <!-- Timer selection screen-->
         <section>
-            {#if mainGoal}
+            {#if $tasks.find(t => t.type === TaskTypes.MainGoal)}
             <h1 class="text-2xl font-bold text-center my-8">
                 Main Goal
             </h1>
             <h1 class="text-xl font-bold text-center my-8">
-                {mainGoal.text}
+                {$tasks.find(t => t.type === TaskTypes.MainGoal).text}
             </h1>
             {/if}
 
@@ -236,7 +233,7 @@
             </ul>
 
             <div class="mt-8">
-                {#if !mainGoal}
+                {#if !$tasks.find(t => t.type === TaskTypes.MainGoal)}
                     <h1 class="text-xl font-black text-center">Select Main Goal</h1>
                     <div class="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
 
@@ -246,7 +243,7 @@
                                     <li class="px-4 py-4 sm:px-6">
                                         <div class="flex items-center justify-between">
                                             <p>{task.text}</p>
-                                            <p on:click={e => mainGoal = task} class="text-green-500 hover:text-green-600">Make Main Goal</p>
+                                            <p on:click={e => task.type = TaskTypes.MainGoal} class="text-green-500 hover:text-green-600">Make Main Goal</p>
                                         </div>
                                     </li>
                                 {/if}

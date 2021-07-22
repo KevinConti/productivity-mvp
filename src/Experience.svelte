@@ -21,7 +21,7 @@
         level = parseInt(window.localStorage.getItem("level"));
     }
     // Convert current experience to a fraction out of 12
-    $: experienceToNextLevel = (level > experienceToLevel.length) ? 15000 : experienceToLevel[level];
+    $: experienceToNextLevel = (level + 1 > experienceToLevel.length) ? 15000 : experienceToLevel[level];
     $: percentage = (experience / experienceToNextLevel) * 100;
     // To convert from a fraction out of 100 (aka a percentage) to out of 12, multiply by 12 and divide the result by 100
     $: result = Math.round((percentage * 12)/100) ?? 0;
